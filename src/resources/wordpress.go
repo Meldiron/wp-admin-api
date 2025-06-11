@@ -42,7 +42,7 @@ func GetServersStatuses() ([]map[string]string, error) {
 		}
 
 		statusVerbose := ""
-		if status == true {
+		if status {
 			statusVerbose = "enabled"
 		} else {
 			statusVerbose = "disabled"
