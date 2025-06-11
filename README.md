@@ -3,7 +3,7 @@
 A Go-based web application for managing WordPress development environments with debug mode toggle functionality. Built with Fiber framework and HTMX for a modern, interactive web interface.
 
 [![Go Lint](https://github.com/meldiron/wp-admin-api/actions/workflows/lint.yml/badge.svg)](https://github.com/meldiron/wp-admin-api/actions/workflows/lint.yml)
-[![Tests & Build](https://github.com/meldiron/wp-admin-api/actions/workflows/build.yml/badge.svg)](https://github.com/meldiron/wp-admin-api/actions/workflows/build.yml)
+[![Tests & Build](https://github.com/meldiron/wp-admin-api/actions/workflows/build.yml/badge.svg)](https://github.com/meldiron/wp-admin-api/actions/workflows/tests.yml)
 [![Docker Release](https://github.com/meldiron/wp-admin-api/actions/workflows/release.yml/badge.svg)](https://github.com/meldiron/wp-admin-api/actions/workflows/release.yml)
 
 ## Features
