@@ -4,6 +4,7 @@ A Go-based web application for managing WordPress development environments with 
 
 [![Go Lint](https://github.com/meldiron/wp-admin-api/actions/workflows/lint.yml/badge.svg)](https://github.com/meldiron/wp-admin-api/actions/workflows/lint.yml)
 [![Tests & Build](https://github.com/meldiron/wp-admin-api/actions/workflows/build.yml/badge.svg)](https://github.com/meldiron/wp-admin-api/actions/workflows/build.yml)
+[![Docker Release](https://github.com/meldiron/wp-admin-api/actions/workflows/release.yml/badge.svg)](https://github.com/meldiron/wp-admin-api/actions/workflows/release.yml)
 
 ## Features
 
@@ -11,8 +12,9 @@ A Go-based web application for managing WordPress development environments with 
 - 🐛 **Debug Mode Toggle**: Enable/disable WordPress debug mode across multiple servers
 - 🖥️ **Web Dashboard**: Clean, responsive interface built with HTMX and Tailwind CSS
 - 🔒 **Session Management**: SQLite-based session storage
-- 🐳 **Docker Support**: Full containerization with Docker Compose
+- 🐳 **Docker Support**: Full containerization with Docker Compose and multi-arch releases
 - 🚀 **High Performance**: Built with Go Fiber framework for speed and efficiency
+- 📦 **Multi-Architecture**: Docker images built for AMD64 and ARM64 platforms
 
 ## Architecture
 
@@ -32,7 +34,30 @@ The application is structured as a modern web application with the following com
 
 ## Installation
 
-### Option 1: Docker (Recommended)
+### Option 1: Docker Hub Image (Recommended)
+
+1. Create environment file:
+```bash
+curl -o .env https://raw.githubusercontent.com/meldiron/wp-admin-api/main/.env.example
+```
+
+2. Edit `.env` with your configuration:
+```env
+USERS=user:password,admin=admin
+SERVERS=First app:./mock/app1,Second app:./mock/app2
+```
+
+3. Run with Docker:
+```bash
+docker run -d \
+  --name wp-admin-api \
+  -p 3000:3000 \
+  --env-file .env \
+  -v $(pwd)/mock:/app/mock \
+  meldiron/wp-admin-api:latest
+```
+
+### Option 2: Docker Compose (Development)
 
 1. Clone the repository:
 ```bash
@@ -56,7 +81,7 @@ SERVERS=First app:./mock/app1,Second app:./mock/app2
 docker-compose up -d
 ```
 
-### Option 2: Local Development
+### Option 3: Local Development
 
 1. Clone and navigate to the project:
 ```bash
@@ -212,6 +237,35 @@ The project includes GitHub Actions workflows:
 
 - **Linting** (`lint.yml`): Runs code quality checks on pull requests
 - **Build & Test** (`build.yml`): Builds and tests the application, including Docker image testing
+- **Docker Release** (`release.yml`): Builds and publishes multi-architecture Docker images on GitHub releases
+
+### Docker Images
+
+Multi-architecture Docker images are automatically built and published to Docker Hub when a new release is created:
+
+- **Registry**: `meldiron/wp-admin-api`
+- **Architectures**: `linux/amd64`, `linux/arm64`
+- **Tags**: 
+  - `latest` (latest release)
+  - Version tags (e.g., `v1.0.0`, `1.0.0`, `1.0`, `1`)
+
+### Creating a Release
+
+1. Create and push a git tag:
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+2. Create a GitHub release from the tag
+3. The Docker image will be automatically built and published
+
+### Required Secrets
+
+For the release workflow to work, configure these GitHub repository secrets:
+
+- `DOCKER_USERNAME`: Your Docker Hub username
+- `DOCKER_PASSWORD`: Your Docker Hub password or access token
 
 ## Contributing
 
