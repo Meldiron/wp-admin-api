@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  wp-admin-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: wp-admin-api
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./mock:/mnt/mock
+    env_file:
+      - .env
+    environment:
+      - USERS=${USERS}
+      - SERVERS=${SERVERS}
+    restart: unless-stopped
