@@ -1,0 +1,9 @@
+services:
+  wp:
+    environment:
+      - WORDPRESS_DB_HOST=db
+      - WORDPRESS_DB_USER=wordpress
+      - WORDPRESS_DB_PASSWORD=wordpress
+      - WORDPRESS_DB_NAME=wordpress
+      - WORDPRESS_DEBUG=false
+      - WORDPRESS_DEBUG_LOG=false

@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en" style="color-scheme: dark only">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard | WordPress Admin API</title>
+    <link rel="icon" href="/favicon.png" type="image/png" />
+    <link rel="stylesheet" href="/launch.min.css" />
+    <script src="/htmx.min.js"></script>
+    <script src="/tailwind.min.js"></script>
+
+    <style>
+      @import url(https://fonts.bunny.net/css?family=inter:200,400,600,800);
+      body {
+        font-family: "Inter", sans-serif;
+      }
+    </style>
+  </head>
+  <body data-layout="website" class="max-w-xl mx-auto">
+    <header class="py-4">
+      <nav>
+        <a href="/">WordPress Admin API</a>
+        <menu>
+          <li><a href="/">Dashboard</a></li>
+        </menu>
+      </nav>
+    </header>
+
+    {{if .username}}
+    <main id="dashboard">
+      <section id="card-user">
+        {{block "card-user" .}}
+        <h2>Welcome {{.username}}!</h2>
+        <p>Below you can find your administrative actions.</p>
+        <button type="reset" hx-delete="/v1/sessions" hx-target="#card-user">
+          Sign out
+        </button>
+        {{end}}
+        
+        {{if .error}}
+            <h5 class="text-red-500 text-center">{{.error}}</h5>
+        {{end}}
+      </section>
+
+      <section id="card-debug">
+          {{block "card-debug" .}}
+        <h2>Toggle debug mode</h2>
+        <p>
+          Enable or disable WordPress debug mode. When enabled, details about
+          errors are returned in HTTP response.
+        </p>
+        
+        {{range .debugStatuses}}
+        <fieldset>
+        <div class="w-full">
+          <h4>{{.name}}</h4>
+
+          <div class="w-full flex items-center justify-between">
+              <p>
+                    <span>Current status:</span>
+                    
+                    {{if eq .status "enabled"}}
+                        <span class="text-green-500 font-semibold">Enabled</span>
+                    {{else}}
+                        <span class="text-red-500 font-semibold">Disabled</span>
+                    {{end}}
+                </p>
+                    
+                    <div>
+                        <form hx-target="#card-debug" hx-post="/v1/actions/debug" hx-confirm="Are you sure you wish to disable debug mode?">
+                            <input type="hidden" name="server" value="{{.name}}">
+                            {{if eq .status "enabled"}}
+                                <input type="hidden" name="status" value="disabled" />
+                                <button class="w-[fit-content]" type="submit">Disable</button>
+                            {{else}}
+                                <input type="hidden" name="status" value="enabled" />
+                                <button class="w-[fit-content]" type="submit">Enable</button>
+                            {{end}}
+                        </form>
+                    </div>
+        </div>
+                    
+        </fieldset>
+        {{end}}
+        
+        {{if .error}}
+        <h5 class="text-red-500 text-center">{{.error}}</h5>
+        {{end}}
+        {{end}}
+      </section>
+    </main>
+    {{else}}
+    <main id="auth">
+      {{block "auth" .}}
+      <section>
+        <h2>Sign in</h2>
+        <p>
+          Access dashboard by authorizing with your credentials. If you don't
+          have an account, please ask administrator to create one.
+        </p>
+        <form hx-post="/v1/sessions" hx-target="#auth">
+          <input
+            hx-preserve
+            id="username"
+            type="text"
+            name="username"
+            placeholder="Username"
+            aria-label="Username"
+            autocomplete="username"
+            required=""
+          />
+          <input
+            id="password"
+            type="password"
+            name="password"
+            placeholder="Password"
+            aria-label="Password"
+            autocomplete="current-password"
+            required=""
+          />
+          <button type="submit">Sign in</button>
+        </form>
+        {{if .error}}
+        <h5 class="text-red-500 text-center">{{.error}}</h5>
+        {{end}}
+      </section>
+      {{end}}
+    </main>
+    {{end}}
+  </body>
+</html>
