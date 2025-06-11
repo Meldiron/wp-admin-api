@@ -9,7 +9,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./mock:/mnt/mock
+      - ./mock:/app/mock
     env_file:
       - .env
     environment:
