@@ -47,7 +47,7 @@ func main() {
 			// Add all session data
 			sess, err := sessionStore.Get(c)
 			if err != nil {
-				return errors.New("Session store not working.")
+				return errors.New("session store not working")
 			}
 			defer sess.Release()
 
@@ -59,9 +59,15 @@ func main() {
 			}
 
 			if data["component"] != nil {
-				html.ExecuteTemplate(c.Response().BodyWriter(), data["component"].(string), data)
+				err := html.ExecuteTemplate(c.Response().BodyWriter(), data["component"].(string), data)
+				if err != nil {
+					return err
+				}
 			} else {
-				html.Execute(c.Response().BodyWriter(), data)
+				err := html.Execute(c.Response().BodyWriter(), data)
+				if err != nil {
+					return err
+				}
 			}
 
 			return nil
@@ -81,7 +87,7 @@ func main() {
 	app.Use(func(c fiber.Ctx) error {
 		sess, err := sessionStore.Get(c)
 		if err != nil {
-			return errors.New("Session store not working.")
+			return errors.New("session store not working")
 		}
 		defer sess.Release()
 
@@ -122,19 +128,19 @@ func main() {
 		}
 
 		if !config.ValidateCredentials(body.Username, body.Password) {
-			return errors.New("Invalid credentials.")
+			return errors.New("invalid credentials")
 		}
 
 		sess, err := sessionStore.Get(c)
 		if err != nil {
-			return errors.New("Session store not working.")
+			return errors.New("session store not working")
 		}
 		defer sess.Release()
 
 		sess.Set("username", body.Username)
 		err = sess.Save()
 		if err != nil {
-			return errors.New("Session could not be saved.")
+			return errors.New("session could not be saved")
 		}
 
 		c.Response().Header.Add("HX-Redirect", "/")
@@ -148,7 +154,7 @@ func main() {
 
 		sess, err := sessionStore.Get(c)
 		if err != nil {
-			return errors.New("Session store not working.")
+			return errors.New("session store not working")
 		}
 		defer sess.Release()
 
@@ -157,7 +163,7 @@ func main() {
 
 			err = sess.Save()
 			if err != nil {
-				return errors.New("Session could not be saved.")
+				return errors.New("session could not be saved")
 			}
 		}
 
@@ -171,7 +177,7 @@ func main() {
 		c.Locals("component", "card-debug")
 
 		if c.Locals("authorized") == nil {
-			return errors.New("Please sign in first.")
+			return errors.New("please sign in first")
 		}
 
 		type CreateDebugAction struct {
@@ -186,7 +192,7 @@ func main() {
 		path := resources.GetServerPath(body.Server)
 
 		if path == "" {
-			return errors.New("Server not found.")
+			return errors.New("server not found")
 		}
 
 		status, err := resources.IsDebugEnabled(path)
@@ -194,10 +200,16 @@ func main() {
 			return err
 		}
 
-		if status == true {
-			resources.ToggleDebugMode(path, false)
+		if status {
+			err := resources.ToggleDebugMode(path, false)
+			if err != nil {
+				return err
+			}
 		} else {
-			resources.ToggleDebugMode(path, true)
+			err := resources.ToggleDebugMode(path, true)
+			if err != nil {
+				return err
+			}
 		}
 
 		statuses, err := resources.GetServersStatuses()
@@ -210,5 +222,8 @@ func main() {
 		return errors.New("") // Render HTMX
 	})
 
-	app.Listen(":3000")
+	err := app.Listen(":3000")
+	if err != nil {
+		panic(err)
+	}
 }

@@ -167,6 +167,11 @@ golangci-lint run --verbose
 golangci-lint run --fix
 ```
 
+```
+# Run code formatter
+go fmt ./...
+```
+
 ### Building
 
 ```bash
