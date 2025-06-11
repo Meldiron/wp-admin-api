@@ -151,6 +151,31 @@ Content-Type: application/x-www-form-urlencoded
 server=MyWebApp2
 ```
 
+### Health Check Endpoint
+
+#### Health Check
+```http
+GET /health
+```
+
+Returns application health status and timestamp:
+```json
+{
+  "status": "healthy",
+  "time": "2024-01-01T12:00:00Z",
+  "service": "wp-admin-api"
+}
+```
+
+If unhealthy (e.g., session store unavailable):
+```json
+{
+  "status": "unhealthy",
+  "error": "session store unavailable",
+  "time": "2024-01-01T12:00:00Z"
+}
+```
+
 ## Development
 
 ### Project Structure
@@ -222,6 +247,25 @@ SERVERS=WP1:/var/www/wordpress1,WP2:/var/www/wordpress2
 3. Deploy with Docker Compose:
 ```bash
 docker-compose -f docker-compose.yml --env-file .env.production up -d
+```
+
+### Health Monitoring
+
+The application includes a built-in health check endpoint at `/health` that:
+- Validates session store connectivity
+- Returns JSON status with timestamp
+- Is used by Docker Compose for container health monitoring
+
+Docker Compose health check configuration:
+- **Interval**: 30 seconds
+- **Timeout**: 10 seconds  
+- **Retries**: 3 attempts
+- **Start Period**: 40 seconds
+
+Monitor container health:
+```bash
+docker ps  # Shows health status in STATUS column
+docker inspect wp-admin-api | grep -A 10 Health  # Detailed health info
 ```
 
 ### Security Considerations
@@ -304,6 +348,12 @@ For the release workflow to work, configure these GitHub repository secrets:
 **Authentication issues:**
 - Verify `USERS` environment variable format
 - Check that usernames don't contain colons or commas
+
+**Health check failing:**
+- Verify the application is running on port 3000
+- Check that SQLite session store is accessible
+- Ensure curl is available in the container
+- Review Docker health check logs: `docker inspect wp-admin-api`
 
 ### Logging
 

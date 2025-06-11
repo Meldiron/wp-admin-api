@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"html/template"
+	"time"
 
 	_ "github.com/joho/godotenv/autoload"
 
@@ -103,6 +104,15 @@ func main() {
 		}
 
 		return c.Next()
+	})
+
+	// Healthcheck endpoint
+	app.Get("/health", func(c fiber.Ctx) error {
+		return c.JSON(fiber.Map{
+			"status": "healthy",
+			"time":   time.Now().UTC().Format(time.RFC3339),
+			"service": "wp-admin-api",
+		})
 	})
 
 	// Homepage (endpoint)
