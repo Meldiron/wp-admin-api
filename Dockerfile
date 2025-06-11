@@ -25,7 +25,7 @@ FROM alpine:latest
 WORKDIR /app
 
 # Install runtime dependencies for SQLite
-RUN apk add --no-cache gcc musl-dev
+RUN apk add --no-cache gcc musl-dev curl
 
 # Copy the binary from the builder stage
 COPY --from=builder /app/main .

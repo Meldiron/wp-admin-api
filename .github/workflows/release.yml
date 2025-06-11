@@ -13,6 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    outputs:
+      tags: ${{ steps.meta.outputs.tags }}
+      image-version: ${{ steps.meta.outputs.version }}
 
     steps:
       - name: Checkout repository
@@ -54,3 +57,24 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release'
+    
+    steps:
+      - name: Deploy to server via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          script: |
+            cd /path/to/wp-admin-api
+            export IMAGE_TAG="${{ needs.build-and-push.outputs.image-version }}"
+            export FULL_IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${IMAGE_TAG}"
+            echo "Deploying image: $FULL_IMAGE"
+            sed -i "s|image:.*wp-admin-api.*|image: $FULL_IMAGE|g" docker-compose.yml
+            docker stack deploy -c docker-compose.yml wp-admin-api
