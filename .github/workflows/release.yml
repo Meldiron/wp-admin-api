@@ -72,9 +72,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT || 22 }}
           script: |
-            cd /path/to/wp-admin-api
+            cd /root/wp-admin-api
             export IMAGE_TAG="${{ needs.build-and-push.outputs.image-version }}"
-            export FULL_IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${IMAGE_TAG}"
-            echo "Deploying image: $FULL_IMAGE"
-            sed -i "s|image:.*wp-admin-api.*|image: $FULL_IMAGE|g" docker-compose.yml
-            docker stack deploy -c docker-compose.yml wp-admin-api
+            echo "Deploying image: $IMAGE_TAG"
+            WP_ADMIN_API_VERSION=$IMAGE_TAG docker stack deploy -c docker-compose.yml wp-admin-api

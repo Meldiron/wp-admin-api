@@ -2,14 +2,11 @@ version: '3'
 
 services:
   wp-admin-api:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: wp-admin-api
+    image: meldiron/wp-admin-api:${WP_ADMIN_API_VERSION}
     ports:
-      - "7000:3000"
+      - "3000:3000"
     volumes:
-      - ./mock:/app/mock
+      - /root/lukasbarber:/mnt/lukasbarber:rw
     env_file:
       - .env
     environment:

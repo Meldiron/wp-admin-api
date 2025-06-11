@@ -244,9 +244,10 @@ USERS=admin:your_secure_password
 SERVERS=WP1:/var/www/wordpress1,WP2:/var/www/wordpress2
 ```
 
-3. Deploy with Docker Compose:
+3. Deploy with Docker Swarm:
 ```bash
-docker-compose -f docker-compose.yml --env-file .env.production up -d
+docker swarm init
+WP_ADMIN_API_VERSION=0.1.2 docker stack deploy -c docker-compose.prod.yml --detach=false wp-admin-api
 ```
 
 ### Health Monitoring
