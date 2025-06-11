@@ -67,7 +67,7 @@ func main() {
 			return nil
 		},
 	})
-	
+
 	// Expose public folder
 	app.Get("/*", static.New("./public"))
 
@@ -173,7 +173,7 @@ func main() {
 		if c.Locals("authorized") == nil {
 			return errors.New("Please sign in first.")
 		}
-		
+
 		type CreateDebugAction struct {
 			Server string `form:"server"`
 		}
@@ -182,19 +182,19 @@ func main() {
 		if err := c.Bind().Body(body); err != nil {
 			return err
 		}
-		
+
 		path := resources.GetServerPath(body.Server)
-		
-		if(path == "") {
+
+		if path == "" {
 			return errors.New("Server not found.")
 		}
-		
+
 		status, err := resources.IsDebugEnabled(path)
-		if(err != nil) {
+		if err != nil {
 			return err
 		}
 
-		if(status == true) {
+		if status == true {
 			resources.ToggleDebugMode(path, false)
 		} else {
 			resources.ToggleDebugMode(path, true)

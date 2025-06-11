@@ -63,7 +63,7 @@ func IsDebugEnabled(path string) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	
+
 	content := string(contentBytes)
 	if strings.Contains(content, "WORDPRESS_DEBUG=true") {
 		return true, nil
@@ -75,30 +75,29 @@ func IsDebugEnabled(path string) (bool, error) {
 func ToggleDebugMode(path string, newStatusBool bool) error {
 	var newStatus string
 	var oldStatus string
-	
-	if(newStatusBool) {
+
+	if newStatusBool {
 		newStatus = "true"
 		oldStatus = "false"
 	} else {
 		newStatus = "false"
 		oldStatus = "true"
 	}
-	
+
 	contentBytes, err := os.ReadFile(path + "/docker-compose.yml")
 	if err != nil {
 		return err
 	}
-	
+
 	content := string(contentBytes)
-	
-	content = strings.Replace(content, "WORDPRESS_DEBUG=" + oldStatus, "WORDPRESS_DEBUG=" + newStatus, 1)
-	content = strings.Replace(content, "WORDPRESS_DEBUG_LOG=" + oldStatus, "WORDPRESS_DEBUG_LOG=" + newStatus, 1)
-	
-	err = os.WriteFile(path + "/docker-compose.yml", []byte(content), 0644)
+
+	content = strings.Replace(content, "WORDPRESS_DEBUG="+oldStatus, "WORDPRESS_DEBUG="+newStatus, 1)
+	content = strings.Replace(content, "WORDPRESS_DEBUG_LOG="+oldStatus, "WORDPRESS_DEBUG_LOG="+newStatus, 1)
+
+	err = os.WriteFile(path+"/docker-compose.yml", []byte(content), 0644)
 	if err != nil {
 		return err
 	}
-	
+
 	return nil
 }
-

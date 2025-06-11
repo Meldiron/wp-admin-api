@@ -1,0 +1,192 @@
+run:
+  timeout: 5m
+  go: "1.24"
+
+linters:
+  enable:
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+    - gofmt
+    - goimports
+    - goconst
+    - gocritic
+    - gocyclo
+    - godot
+    - gofumpt
+    - gomnd
+    - gosec
+    - misspell
+    - nakedret
+    - nolintlint
+    - prealloc
+    - revive
+    - rowserrcheck
+    - sqlclosecheck
+    - typecheck
+    - unconvert
+    - unparam
+    - whitespace
+    - bodyclose
+    - contextcheck
+    - exportloopref
+    - nilerr
+    - noctx
+    - predeclared
+    - tenv
+  disable:
+    - exhaustivestruct
+    - exhaustruct
+    - forbidigo
+    - funlen
+    - gochecknoglobals
+    - gochecknoinits
+    - godox
+    - golint
+    - lll
+    - nlreturn
+    - paralleltest
+    - testpackage
+    - wsl
+
+linters-settings:
+  errcheck:
+    check-type-assertions: true
+    check-blank: true
+  
+  goconst:
+    min-len: 3
+    min-occurrences: 2
+  
+  gocritic:
+    enabled-tags:
+      - diagnostic
+      - experimental
+      - opinionated
+      - performance
+      - style
+    disabled-checks:
+      - dupImport
+      - ifElseChain
+      - octalLiteral
+      - whyNoLint
+  
+  gocyclo:
+    min-complexity: 15
+  
+  godot:
+    scope: declarations
+    capital: false
+  
+  gofumpt:
+    lang-version: "1.24"
+    extra-rules: true
+  
+  gomnd:
+    checks:
+      - argument
+      - case
+      - condition
+      - operation
+      - return
+      - assign
+    ignored-numbers:
+      - '0'
+      - '1'
+      - '2'
+      - '3'
+      - '10'
+      - '100'
+      - '1000'
+      - '1024'
+    ignored-functions:
+      - 'math.*'
+      - 'http.StatusText'
+      - 'strconv.*'
+  
+  gosec:
+    excludes:
+      - G304 # file path provided as taint input
+      - G404 # insecure random number source (rand)
+  
+  misspell:
+    locale: US
+  
+  nakedret:
+    max-func-lines: 30
+  
+  prealloc:
+    simple: true
+    range-loops: true
+    for-loops: true
+  
+  revive:
+    rules:
+      - name: exported
+        arguments: [true]
+      - name: package-comments
+      - name: var-naming
+      - name: indent-error-flow
+      - name: blank-imports
+      - name: context-as-argument
+      - name: dot-imports
+      - name: error-return
+      - name: error-strings
+      - name: error-naming
+      - name: if-return
+      - name: increment-decrement
+      - name: var-declaration
+      - name: package-comments
+      - name: range-val-in-closure
+      - name: range-val-address
+      - name: waitgroup-by-value
+      - name: atomic
+      - name: empty-lines
+      - name: call-to-gc
+      - name: duplicated-imports
+      - name: import-shadowing
+      - name: bare-return
+      - name: unused-parameter
+      - name: unreachable-code
+      - name: redefines-builtin-id
+  
+  staticcheck:
+    go: "1.24"
+    checks: ["all"]
+  
+  unused:
+    go: "1.24"
+
+issues:
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - gomnd
+        - goconst
+        - gosec
+    - path: main\.go|cmd/
+      linters:
+        - gomnd
+    - linters:
+        - govet
+      text: "composites"
+    - linters:
+        - staticcheck
+      text: "SA9003"
+    - linters:
+        - revive
+      text: "package-comments"
+      path: main\.go
+  exclude-use-default: false
+  max-issues-per-linter: 0
+  max-same-issues: 0
+
+output:
+  format: colored-line-number
+  print-issued-lines: true
+  print-linter-name: true
+  uniq-by-line: true
+  sort-results: true
