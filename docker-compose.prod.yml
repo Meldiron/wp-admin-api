@@ -19,6 +19,7 @@ services:
       - /root/duskovavilacz:/mnt/duskovavilacz:rw
       - /root/akhribsk:/mnt/akhribsk:rw
       - ./sqlite:/app/sqlite
+      - /var/run/docker.sock:/var/run/docker.sock
     env_file:
       - .env
     environment:

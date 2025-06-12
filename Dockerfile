@@ -24,8 +24,9 @@ FROM alpine:latest
 
 WORKDIR /app
 
-# Install runtime dependencies for SQLite
-RUN apk add --no-cache gcc musl-dev curl
+# Install runtime dependencies for SQLite, healthcheck, and Docker CLI for various actions
+RUN apk add --no-cache gcc musl-dev curl docker-cli
+
 
 # Copy the binary from the builder stage
 COPY --from=builder /app/main .
