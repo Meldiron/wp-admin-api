@@ -13,7 +13,7 @@ services:
           delay: 10s
     volumes:
       - /root/lukasbarber:/mnt/lukasbarber:rw
-      - ./sqlite/fiber.sqlite3:/app/sqlite/fiber.sqlite3
+      - ./sqlite:/app/sqlite
     env_file:
       - .env
     environment:
