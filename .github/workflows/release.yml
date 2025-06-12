@@ -74,5 +74,7 @@ jobs:
           script: |
             cd /root/wp-admin-api
             export IMAGE_TAG="${{ needs.build-and-push.outputs.image-version }}"
+            echo "Updating Docker stack configuration"
+            git pull
             echo "Deploying image: $IMAGE_TAG"
             export WP_ADMIN_API_VERSION=$IMAGE_TAG; export $(cat .env) > /dev/null 2>&1; docker stack deploy -c docker-compose.prod.yml --detach=false wp-admin-api
