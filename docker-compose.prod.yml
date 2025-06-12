@@ -4,7 +4,13 @@ services:
   wp-admin-api:
     image: meldiron/wp-admin-api:${WP_ADMIN_API_VERSION}
     ports:
-      - "3000:3000"
+      - 7000:3000
+    deploy:
+      mode: replicated
+      replicas: 2
+      update_config:
+          parallelism: 1
+          delay: 10s
     volumes:
       - /root/lukasbarber:/mnt/lukasbarber:rw
     env_file:
@@ -18,4 +24,3 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 40s

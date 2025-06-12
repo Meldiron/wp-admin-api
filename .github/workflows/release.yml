@@ -75,4 +75,4 @@ jobs:
             cd /root/wp-admin-api
             export IMAGE_TAG="${{ needs.build-and-push.outputs.image-version }}"
             echo "Deploying image: $IMAGE_TAG"
-            WP_ADMIN_API_VERSION=$IMAGE_TAG docker stack deploy -c docker-compose.yml wp-admin-api
+            export WP_ADMIN_API_VERSION=$IMAGE_TAG; export $(cat .env) > /dev/null 2>&1; docker stack deploy -c docker-compose.prod.yml --detach=false wp-admin-api
