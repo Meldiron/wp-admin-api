@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     container_name: wp-admin-api
     ports:
-      - "7000:3000"
+      - "3000:3000"
     volumes:
       - ./mock:/app/mock
       - ./sqlite:/app/sqlite
