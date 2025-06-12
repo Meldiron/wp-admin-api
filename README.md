@@ -247,7 +247,7 @@ SERVERS=WP1:/var/www/wordpress1,WP2:/var/www/wordpress2
 3. Deploy with Docker Swarm:
 ```bash
 docker swarm init
-export WP_ADMIN_API_VERSION=0.1.3; export $(cat .env) > /dev/null 2>&1; docker stack deploy -c docker-compose.prod.yml --detach=false wp-admin-api
+export WP_ADMIN_API_VERSION=0.1.3 && source .env && docker stack deploy -c docker-compose.prod.yml --detach=false wp-admin-api
 ```
 
 ### Health Monitoring
