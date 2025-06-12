@@ -19,7 +19,9 @@ import (
 
 func main() {
 	// Sessions
-	storage := sqlite3.New()
+	storage := sqlite3.New(sqlite3.Config{
+		Database:   "./sqlite/fiber.sqlite3",
+	})
 	sessionStore := session.NewStore(session.Config{
 		Storage: storage,
 	})

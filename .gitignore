@@ -1,3 +1,4 @@
 fiber.sqlite3
 .env
 tmp
+sqlite/fiber.sqlite3
