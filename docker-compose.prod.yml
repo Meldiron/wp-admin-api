@@ -13,6 +13,11 @@ services:
           delay: 10s
     volumes:
       - /root/lukasbarber:/mnt/lukasbarber:rw
+      - /root/test:/mnt/test:rw
+      - /root/test2:/mnt/test2:rw
+      - /root/test3:/mnt/test3:rw
+      - /root/duskovavilacz:/mnt/duskovavilacz:rw
+      - /root/akhribsk:/mnt/akhribsk:rw
       - ./sqlite:/app/sqlite
     env_file:
       - .env
