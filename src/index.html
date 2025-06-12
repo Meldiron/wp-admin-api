@@ -16,7 +16,7 @@
       }
     </style>
   </head>
-  <body data-layout="website" class="max-w-xl mx-auto">
+  <body data-layout="website" class="max-w-xl mx-auto mb-8">
     <header class="py-4">
       <nav>
         <a href="/">WordPress Admin API</a>
@@ -30,7 +30,7 @@
     <main id="dashboard">
       <section id="card-user">
         {{block "card-user" .}}
-        <h2>Welcome {{.username}}!</h2>
+        <h2>Welcome, {{.username}}!</h2>
         <p>Below you can find your administrative actions.</p>
         <button type="reset" hx-delete="/v1/sessions" hx-target="#card-user">
           Sign out
@@ -38,7 +38,43 @@
         {{end}}
         
         {{if .error}}
-            <h5 class="text-red-500 text-center capitalize">{{.error}}</h5>
+            <h4 class="text-red-500 text-center capitalize">{{.error}}</h4>
+        {{end}}
+      </section>
+      
+      <section id="card-restart">
+        {{block "card-restart" .}}
+        <h2>Restart server</h2>
+        <p>
+            Restart WordPress instance to apply any changes, such as toggle of debug mode.
+        </p>
+
+
+        <div class="w-full">
+          <h4>{{.name}}</h4>
+          
+          <form  hx-target="#card-restart" hx-post="/v1/actions/restart" hx-confirm="Are you sure you wish to restart {{.name}} server?">
+              <input type="hidden" name="server" value="{{.name}}">
+                  
+              <div class="flex gap-4 items-center">
+              <select id="server" name="server">
+                   {{range .debugStatuses}}
+                  <option value="{{.name}}">{{.name}}</option>
+                  {{end}}
+              </select>
+              
+              <button class="w-[fit-content]" type="submit">Restart</button>
+            </div>
+          </form>
+
+        
+          {{if .error}}
+          <h4 class="text-red-500 text-center capitalize pt-4">{{.error}}</h4>
+          {{end}}
+          
+          {{if .success}}
+          <h4 class="text-green-500 text-center capitalize pt-4">{{.success}}</h4>
+          {{end}}
         {{end}}
       </section>
 
@@ -67,7 +103,7 @@
                 </p>
                     
                     <div>
-                        <form hx-target="#card-debug" hx-post="/v1/actions/debug" hx-confirm="Are you sure you wish to disable debug mode?">
+                        <form hx-target="#card-debug" hx-post="/v1/actions/debug" hx-confirm="Are you sure you wish to disable debug mode for {{.name}} server?">
                             <input type="hidden" name="server" value="{{.name}}">
                             {{if eq .status "enabled"}}
                                 <input type="hidden" name="status" value="disabled" />
@@ -84,7 +120,7 @@
         {{end}}
         
         {{if .error}}
-        <h5 class="text-red-500 text-center capitalize">{{.error}}</h5>
+        <h4 class="text-red-500 text-center capitalize">{{.error}}</h4>
         {{end}}
         {{end}}
       </section>
@@ -121,7 +157,7 @@
           <button type="submit">Sign in</button>
         </form>
         {{if .error}}
-        <h5 class="text-red-500 text-center capitalize">{{.error}}</h5>
+        <h4 class="text-red-500 text-center capitalize">{{.error}}</h4>
         {{end}}
       </section>
       {{end}}

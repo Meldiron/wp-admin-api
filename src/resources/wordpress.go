@@ -1,9 +1,13 @@
 package resources
 
 import (
-	_ "github.com/joho/godotenv/autoload"
+	"errors"
+	"io"
 	"os"
+	"os/exec"
 	"strings"
+
+	_ "github.com/joho/godotenv/autoload"
 )
 
 var servers []map[string]string
@@ -96,6 +100,37 @@ func ToggleDebugMode(path string, newStatusBool bool) error {
 
 	err = os.WriteFile(path+"/docker-compose.yml", []byte(content), 0644)
 	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func RestartServer(path string) error {
+	restartCommand := os.Getenv("RESTART_COMMAND")
+
+	cmd := exec.Command("sh", "-c", "cd "+path+" && "+restartCommand)
+
+	stderr, err := cmd.StderrPipe()
+	if err != nil {
+		return err
+	}
+
+	if err := cmd.Start(); err != nil {
+		return err
+	}
+
+	stderrBytes, err := io.ReadAll(stderr)
+	if err != nil {
+		return err
+	}
+
+	if err := cmd.Wait(); err != nil {
+		stdErr := string(stderrBytes)
+		if len(stdErr) > 0 {
+			return errors.New(stdErr)
+		}
+
 		return err
 	}
 

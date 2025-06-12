@@ -18,6 +18,7 @@ services:
     environment:
       - USERS=${USERS}
       - SERVERS=${SERVERS}
+      - RESTART_COMMAND=${RESTART_COMMAND}
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/health"]

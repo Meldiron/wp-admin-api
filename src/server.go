@@ -37,7 +37,7 @@ func main() {
 			data := make(map[any]interface{})
 
 			// Add whitelisted locals data
-			keys := []string{"error", "component", "debugStatuses"} // TODO: Make dynamic
+			keys := []string{"error", "component", "debugStatuses", "success"} // TODO: Make dynamic
 			for _, key := range keys {
 				value := c.Locals(key)
 				if value != nil {
@@ -109,8 +109,8 @@ func main() {
 	// Healthcheck endpoint
 	app.Get("/health", func(c fiber.Ctx) error {
 		return c.JSON(fiber.Map{
-			"status": "healthy",
-			"time":   time.Now().UTC().Format(time.RFC3339),
+			"status":  "healthy",
+			"time":    time.Now().UTC().Format(time.RFC3339),
 			"service": "wp-admin-api",
 		})
 	})
@@ -228,6 +228,39 @@ func main() {
 		}
 
 		c.Locals("debugStatuses", statuses)
+
+		return errors.New("") // Render HTMX
+	})
+
+	// Create restart action (endpoint)
+	v1.Post("/actions/restart", func(c fiber.Ctx) error {
+		c.Locals("component", "card-restart")
+
+		if c.Locals("authorized") == nil {
+			return errors.New("please sign in first")
+		}
+
+		type CreateRestartAction struct {
+			Server string `form:"server"`
+		}
+
+		body := new(CreateRestartAction)
+		if err := c.Bind().Body(body); err != nil {
+			return err
+		}
+
+		path := resources.GetServerPath(body.Server)
+
+		if path == "" {
+			return errors.New("server not found")
+		}
+
+		err := resources.RestartServer(path)
+		if err != nil {
+			return err
+		}
+
+		c.Locals("success", "server restarted successfully")
 
 		return errors.New("") // Render HTMX
 	})
