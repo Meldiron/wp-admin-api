@@ -7,7 +7,7 @@ services:
       - 7000:3000
     deploy:
       mode: replicated
-      replicas: 2
+      replicas: 1 # Increase to 2 for 0 downtime deployment
       update_config:
           parallelism: 1
           delay: 10s
